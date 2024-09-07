@@ -28,7 +28,7 @@ export default [
     rules: {
       // JavaScript rules
       "eqeqeq": "off",
-      "no-unused-vars": "error",
+      "no-unused-vars": "error", //warn
       "max-len": ["warn", { code: 200 }],
       "prefer-const": ["error", { ignoreReadBeforeAssign: true }],
       "no-use-before-define": "off",
