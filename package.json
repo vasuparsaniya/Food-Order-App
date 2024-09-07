@@ -50,8 +50,8 @@
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.4.0"
   },
-  "lint-staged": {
-    "{src,src//*}.{tsx,ts,html,css}": "prettier --write",
-    "{src,src//*}.{tsx,ts}": "eslint"
-  }
+"lint-staged": {
+  "{src,src/**/*}.{tsx,ts,html,css}": "prettier --write",
+  "{src,src/**/*}.{tsx,ts}": "eslint"
+}
 }
