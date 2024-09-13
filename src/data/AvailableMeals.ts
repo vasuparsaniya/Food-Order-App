@@ -1,4 +1,4 @@
-type AvailableMeal = {
+export type AvailableMeal = {
   id: string;
   name: string;
   description: string;
