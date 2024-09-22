@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import classes from '../../assets/css/UI/Input.module.css';
 
 type InputAttributesType = {
@@ -12,17 +13,18 @@ type InputAttributesType = {
 type InputProps = {
   label: string;
   input: InputAttributesType;
+  ref: React.MutableRefObject<number>;
 };
 
-const Input = (props: InputProps) => {
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { label, input } = props;
 
   return (
     <div className={classes.input}>
       <label htmlFor={input.id}>{label}</label>
-      <input {...input} />
+      <input ref={ref} {...input} />
     </div>
   );
-};
+});
 
 export default Input;
