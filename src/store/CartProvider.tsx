@@ -22,8 +22,6 @@ const defaultCartState: DefaultCartStateType = {
 const cartReducer = (state: DefaultCartStateType, action: ActionType) => {
   switch (action.type) {
     case 'ADD':
-      console.log('=======state', state);
-      console.log('=======action', action);
       const updatedItems = state.items.concat(action.item);
       const updateTotalAmount =
         state.totalAmount + action.item.price * action.item.quantity;
