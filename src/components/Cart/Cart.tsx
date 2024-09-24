@@ -14,11 +14,11 @@ const Cart = ({ onClose }: CartProps) => {
   const hasItems = cartCtx.items.length > 0;
 
   const onRemoveHandler = (id: string) => {
-    console.log('======id', id);
+    cartCtx.removeItem(id);
   };
 
   const onAddHandler = (item: ItemInCartType) => {
-    console.log('=======item', item);
+    cartCtx.addItem({ ...item, quantity: 1 });
   };
 
   return (

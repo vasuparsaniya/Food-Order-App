@@ -12,7 +12,7 @@ type DefaultCartStateType = {
 
 type ActionType =
   | { type: 'ADD'; item: ItemInCartType }
-  | { type: 'REMOVE'; id: number };
+  | { type: 'REMOVE'; id: string };
 
 const defaultCartState: DefaultCartStateType = {
   items: [],
@@ -22,16 +22,59 @@ const defaultCartState: DefaultCartStateType = {
 const cartReducer = (state: DefaultCartStateType, action: ActionType) => {
   switch (action.type) {
     case 'ADD':
-      const updatedItems = state.items.concat(action.item);
+      const existingCartItemIndex: number = state.items.findIndex(
+        (item) => item.id === action.item.id,
+      );
       const updateTotalAmount =
         state.totalAmount + action.item.price * action.item.quantity;
+      let updatedItems: ItemInCartType[];
+      const existingCartItem = state.items[existingCartItemIndex];
+      if (existingCartItem) {
+        updatedItems = [...state.items];
+        updatedItems[existingCartItemIndex] = {
+          ...existingCartItem,
+          quantity: existingCartItem.quantity + action.item.quantity,
+        };
+      } else {
+        updatedItems = state.items.concat(action.item);
+      }
       return { items: updatedItems, totalAmount: updateTotalAmount };
     case 'REMOVE':
-      break;
+      let updatedItemsAfterRemove;
+      let updatedTotalAmountAfterRemove;
+      const existingCartItemForRemove = state.items.find(
+        (item) => item.id === action.id,
+      );
+      if (existingCartItemForRemove) {
+        updatedTotalAmountAfterRemove =
+          state.totalAmount - existingCartItemForRemove.price;
+        if (existingCartItemForRemove.quantity === 1) {
+          updatedItemsAfterRemove = state.items.filter(
+            (item) => item.id !== action.id,
+          );
+        } else {
+          updatedItemsAfterRemove = state.items.map((item) => {
+            if (item.id === action.id) {
+              return {
+                ...item,
+                quantity: item.quantity - 1,
+              };
+            }
+            return item;
+          });
+        }
+      } else {
+        updatedItemsAfterRemove = state.items;
+        updatedTotalAmountAfterRemove = state.totalAmount;
+      }
+      return {
+        items: updatedItemsAfterRemove,
+        totalAmount: updatedTotalAmountAfterRemove,
+      };
     default:
-      throw new Error('Unknown cart action type');
+      console.error('---------Unknown cart action type----------');
+      return state;
   }
-  return defaultCartState;
 };
 
 const CartProvider = ({ children }: CartProviderProps) => {
@@ -45,11 +88,10 @@ const CartProvider = ({ children }: CartProviderProps) => {
     disPatchCartAction({ type: 'ADD', item: item });
   };
 
-  const removeItemFromCartHandler = (id: number) => {
+  const removeItemFromCartHandler = (id: string) => {
     disPatchCartAction({ type: 'REMOVE', id: id });
   };
 
-  console.log('==========cartState', cartState);
   const cartContext: CartContextType = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,

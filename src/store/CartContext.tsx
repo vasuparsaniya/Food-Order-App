@@ -9,7 +9,7 @@ export type CartContextType = {
   // eslint-disable-next-line no-unused-vars
   addItem: (item: ItemInCartType) => void;
   // eslint-disable-next-line no-unused-vars
-  removeItem: (id: number) => void;
+  removeItem: (id: string) => void;
 };
 
 const CartContext = createContext<CartContextType>({

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import headerCartButtonCss from '../../assets/css/Layout/HeaderCartButton.module.css';
 import CartIcon from '../Cart/CartIcon';
 import CartContext from '../../store/CartContext';
@@ -11,12 +11,33 @@ const HeaderCartButton = ({ onClick }: HeaderCartButtonProps) => {
   // ** use context hook
   const cartCtx = useContext(CartContext);
 
+  // ** state **
+  const [btnIsHighlighted, setBtnIsHighlighted] = useState<boolean>(false);
+
   const numberOfCartItems = cartCtx.items.reduce((acc, item) => {
     return acc + item.quantity;
   }, 0);
 
+  const btnClasses = `${headerCartButtonCss.button} ${btnIsHighlighted ? headerCartButtonCss.bump : ''}`;
+
+  useEffect(() => {
+    if (cartCtx.items.length === 0) {
+      return;
+    }
+    setBtnIsHighlighted(true);
+
+    //---- after we remove that animation class
+    const removeAnimationClassTimer = setTimeout(() => {
+      setBtnIsHighlighted(false);
+    }, 600);
+
+    return () => {
+      clearTimeout(removeAnimationClassTimer);
+    };
+  }, [numberOfCartItems]);
+
   return (
-    <button className={headerCartButtonCss.button} onClick={onClick}>
+    <button className={btnClasses} onClick={onClick}>
       <span className={headerCartButtonCss.icon}>
         <CartIcon />
       </span>
