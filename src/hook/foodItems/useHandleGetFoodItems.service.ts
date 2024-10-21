@@ -7,7 +7,7 @@ const useHandleGetFoodItems = () => {
   const getFoodItemsAPI = async ({
     config,
   }: GetRequestFunctionParametersType) => {
-    const getFoodItems = await getRequest('/food-items', config);
+    const getFoodItems: any = await getRequest(`/food-items.json`, config);
     console.log('============getFoodItems', getFoodItems);
     return getFoodItems;
   };

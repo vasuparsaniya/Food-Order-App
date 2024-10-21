@@ -6,7 +6,7 @@ export type AvailableMeal = {
   quantity: number;
 };
 
-type AvailableDummyMeals = AvailableMeal[];
+export type AvailableDummyMeals = AvailableMeal[];
 
 export const AVAILABLE_DUMMY_MEALS: AvailableDummyMeals = [
   {

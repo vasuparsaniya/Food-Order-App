@@ -1,9 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
+import { REACT_APP_FIREBASE_BASE_URL } from './envConfig/envConfig';
 
 //Create axios handler
+console.log('========process.env', process.env);
 
 const axiosHandler: AxiosInstance = axios.create({
-  baseURL: 'https://food-order-app-dcc18-default-rtdb.firebaseio.com',
+  baseURL: `${REACT_APP_FIREBASE_BASE_URL}`,
   headers: {
     'Content-Type': 'application/json',
   },
