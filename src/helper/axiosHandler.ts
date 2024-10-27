@@ -2,7 +2,6 @@ import axios, { AxiosInstance, AxiosResponse, AxiosError } from 'axios';
 import { REACT_APP_FIREBASE_BASE_URL } from './envConfig/envConfig';
 
 //Create axios handler
-console.log('========process.env', process.env);
 
 const axiosHandler: AxiosInstance = axios.create({
   baseURL: `${REACT_APP_FIREBASE_BASE_URL}`,
@@ -13,6 +12,9 @@ const axiosHandler: AxiosInstance = axios.create({
 
 axiosHandler.interceptors.response.use(
   (response: AxiosResponse) => {
+    if (!(response.status === 200)) {
+      throw new Error(`Error fetching data: ${response.status}`);
+    }
     return response;
   },
   (error: AxiosError) => {

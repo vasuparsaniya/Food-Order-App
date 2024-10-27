@@ -6,9 +6,12 @@ const useHandleGetFoodItems = () => {
 
   const getFoodItemsAPI = async ({
     config,
+    authToken,
   }: GetRequestFunctionParametersType) => {
-    const getFoodItems: any = await getRequest(`/food-items.json`, config);
-    console.log('============getFoodItems', getFoodItems);
+    const getFoodItems: any = await getRequest(
+      `/food-items.json?auth=${authToken}`,
+      config,
+    );
     return getFoodItems;
   };
   return { getFoodItemsAPI };

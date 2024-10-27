@@ -8,6 +8,7 @@ type PostRequestFunctionParametersType = {
 type GetRequestFunctionParametersType = {
   data?: any;
   config?: AxiosRequestConfig;
+  authToken?: string;
 };
 
 export { PostRequestFunctionParametersType, GetRequestFunctionParametersType };

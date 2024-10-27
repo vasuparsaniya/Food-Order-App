@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import availableMealsCss from '../../assets/css/Meals/AvailableMeals.module.css';
-import {
-  AVAILABLE_DUMMY_MEALS,
-  AvailableDummyMeals,
-} from '../../data/AvailableMeals';
+import { AvailableDummyMeals } from '../../data/AvailableMeals';
 import Card from '../UI/Card';
 import MealItem from './MealItem/MealItem';
 import useHandleGetFoodItems from '../../hook/foodItems/useHandleGetFoodItems.service';
-import { getAuthToken } from '../../helper/firebaseConfig/authentication';
+import { auth, signInUser } from '../../helper/firebaseConfig/authentication';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const AvailableMeals = () => {
   // ** State **
@@ -18,15 +16,36 @@ const AvailableMeals = () => {
 
   useEffect(() => {
     const fetchAvailableMeals = async () => {
-      const authToken = await getAuthToken();
-      const meals = await getFoodItemsAPI({
-        headers: {
-          Authorization: `Bearer ${authToken}`, // Include the auth token
-          'Content-Type': 'application/json',
-        },
-      });
-      setAvailableMeals(meals);
+      try {
+        await signInUser();
+
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const authToken = await user.getIdToken(true);
+            console.log('=======auth token', authToken);
+            const meals = await getFoodItemsAPI({
+              config: {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+              authToken: authToken,
+            });
+            const mealsArray: AvailableDummyMeals = Object.values(meals.data);
+            setAvailableMeals(mealsArray);
+          } else {
+            console.error('User not authenticated');
+          }
+        });
+      } catch (error: any) {
+        console.error(
+          'Fetch Available Meals Request Failed:',
+          error.response?.data || error.message,
+        );
+      }
     };
+
     fetchAvailableMeals();
   }, []);
 
@@ -35,7 +54,7 @@ const AvailableMeals = () => {
     <section className={availableMealsCss.meals}>
       <Card>
         <ul>
-          {AVAILABLE_DUMMY_MEALS.map((meals, index) => (
+          {availableMeals.map((meals, index) => (
             <MealItem key={index} mealData={meals} />
           ))}
         </ul>
