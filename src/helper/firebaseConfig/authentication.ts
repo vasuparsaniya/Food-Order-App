@@ -1,5 +1,9 @@
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { firebaseApp } from './firebaseConfig'; // Assuming you have initialized firebaseApp
+import {
+  REACT_APP_FIRE_BASE_USER_EMAIL,
+  REACT_APP_FIRE_BASE_USER_PASSWORD,
+} from '../envConfig/envConfig';
 
 export const auth = getAuth(firebaseApp);
 
@@ -18,8 +22,8 @@ const signInUser = async () => {
   try {
     const userCredential = await signInWithEmailAndPassword(
       auth,
-      'vasuparsaniya21@yopmail.com',
-      'Test@123456789',
+      REACT_APP_FIRE_BASE_USER_EMAIL as string,
+      REACT_APP_FIRE_BASE_USER_PASSWORD as string,
     );
     console.log('User signed in:', userCredential.user);
     return userCredential.user;

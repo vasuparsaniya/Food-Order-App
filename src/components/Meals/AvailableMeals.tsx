@@ -6,13 +6,14 @@ import MealItem from './MealItem/MealItem';
 import useHandleGetFoodItems from '../../hook/foodItems/useHandleGetFoodItems.service';
 import { auth, signInUser } from '../../helper/firebaseConfig/authentication';
 import { onAuthStateChanged } from 'firebase/auth';
+import CircularLoader from '../../libs/components/CircularLoader';
 
 const AvailableMeals = () => {
   // ** State **
   const [availableMeals, setAvailableMeals] = useState<AvailableDummyMeals>([]);
 
   // ** API **
-  const { getFoodItemsAPI } = useHandleGetFoodItems();
+  const { getFoodItemsAPI, isLoading } = useHandleGetFoodItems();
 
   useEffect(() => {
     const fetchAvailableMeals = async () => {
@@ -21,8 +22,7 @@ const AvailableMeals = () => {
 
         onAuthStateChanged(auth, async (user) => {
           if (user) {
-            const authToken = await user.getIdToken(true);
-            console.log('=======auth token', authToken);
+            const authToken = await user.getIdToken();
             const meals = await getFoodItemsAPI({
               config: {
                 method: 'GET',
@@ -53,11 +53,15 @@ const AvailableMeals = () => {
   return (
     <section className={availableMealsCss.meals}>
       <Card>
-        <ul>
-          {availableMeals.map((meals, index) => (
-            <MealItem key={index} mealData={meals} />
-          ))}
-        </ul>
+        {isLoading || !availableMeals.length ? (
+          <CircularLoader />
+        ) : (
+          <ul>
+            {availableMeals.map((meals, index) => (
+              <MealItem key={index} mealData={meals} />
+            ))}
+          </ul>
+        )}
       </Card>
     </section>
   );
