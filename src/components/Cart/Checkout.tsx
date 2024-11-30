@@ -6,7 +6,17 @@ import {
 } from '../../helper/validation/inputValidation';
 
 // ** types **
-type CheckoutPropsType = { onCancle: () => void };
+export type UserDataType = {
+  name: string | undefined;
+  street: string | undefined;
+  postalCode: string | undefined;
+  city: string | undefined;
+};
+type CheckoutPropsType = {
+  onCancle: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSubmit: (userData: UserDataType) => void;
+};
 type FormInputValidationType = {
   name: boolean;
   street: boolean;
@@ -46,7 +56,7 @@ const ValidationMessage = (props: ValidationMessagePropsType) => {
 };
 
 const Checkout = (props: CheckoutPropsType) => {
-  const { onCancle } = props;
+  const { onSubmit, onCancle } = props;
   // ** Ref **
   const nameInputRef = useRef<HTMLInputElement>(null);
   const streetInputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +82,16 @@ const Checkout = (props: CheckoutPropsType) => {
         city: !!city && isNotEmpty(city),
         postalCode: !!postalCode && isFiveChars(postalCode),
       };
+    });
+
+    if (!formInputsValidation) {
+      return;
+    }
+    onSubmit({
+      name: name,
+      street: street,
+      postalCode: postalCode,
+      city: city,
     });
   };
 
