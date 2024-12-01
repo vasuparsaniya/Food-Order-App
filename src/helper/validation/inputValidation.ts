@@ -1,5 +1,10 @@
-const isNotEmpty = (value: string) => value.trim() !== '';
+const isNotEmpty = (value: string | undefined): boolean =>
+  !!value && value.trim() !== '';
 
-const isFiveChars = (value: string) => value.trim().length === 5;
+const isFiveChars = (value: string | undefined): boolean =>
+  !!value && value.trim().length === 5;
 
-export { isNotEmpty, isFiveChars };
+const checkFormValidation = (formData: { [x: string]: boolean }) => {
+  return Object.values(formData).every(Boolean); //----default true
+};
+export { isNotEmpty, isFiveChars, checkFormValidation };

@@ -16,12 +16,14 @@ type CartProps = {
 const Cart = ({ onClose }: CartProps) => {
   // ** State **
   const [isCheckout, setIsCheckout] = useState<boolean>(false);
+  const [isOrderSuccess, setIsOrderSuccess] = useState<boolean>(false);
+
   const cartCtx = useContext(CartContext);
   const totalAmount = cartCtx.totalAmount.toFixed(2);
   const hasItems = cartCtx.items.length > 0;
 
   // ** API **
-  const { orderFoodItemsAPI } = useHandleOrderFoodItems();
+  const { orderFoodItemsAPI, isLoading } = useHandleOrderFoodItems();
 
   const onRemoveHandler = (id: string) => {
     cartCtx.removeItem(id);
@@ -54,9 +56,9 @@ const Cart = ({ onClose }: CartProps) => {
             },
             authToken: authToken,
           });
-          console.log('=====orderFoodItems', orderFoodItems);
           if (orderFoodItems) {
             cartCtx.clearItem();
+            setIsOrderSuccess(true);
           }
         }
       });
@@ -69,34 +71,59 @@ const Cart = ({ onClose }: CartProps) => {
     setIsCheckout(false);
   };
 
-  return (
-    <Modal onclose={onClose}>
-      <ul className={classes['cart-items']}>
-        {cartCtx.items.map((item: ItemInCartType, index: number) => (
-          <CartItem
-            key={index}
-            cartItem={item}
-            onRemove={onRemoveHandler}
-            onAdd={onAddHandler}
+  const BeforeOrderItem = () => {
+    return (
+      <>
+        <ul className={classes['cart-items']}>
+          {cartCtx.items.map((item: ItemInCartType, index: number) => (
+            <CartItem
+              key={index}
+              cartItem={item}
+              onRemove={onRemoveHandler}
+              onAdd={onAddHandler}
+            />
+          ))}
+        </ul>
+        <div className={classes.total}>
+          <span>Total Amount</span>
+          <span>{totalAmount}</span>
+        </div>
+        {isCheckout && (
+          <Checkout
+            onSubmit={submitOrderHandler}
+            onCancle={onCancle}
+            isLoading={isLoading}
           />
-        ))}
-      </ul>
-      <div className={classes.total}>
-        <span>Total Amount</span>
-        <span>{totalAmount}</span>
-      </div>
-      {isCheckout && (
-        <Checkout
-          onSubmit={submitOrderHandler}
-          onCancle={onCancle}
-          isLoading={false}
-        />
-      )}
-      {!isCheckout && (
+        )}
+        {!isCheckout && (
+          <div className={classes.actions}>
+            <ButtonLoader
+              type="button"
+              className={classes['button-alt']}
+              onClick={onClose}
+            >
+              Close
+            </ButtonLoader>
+            {hasItems && (
+              <ButtonLoader
+                type="button"
+                className={classes.button}
+                onClick={orderHandler}
+              >
+                Order
+              </ButtonLoader>
+            )}
+          </div>
+        )}
+      </>
+    );
+  };
+
+  const AfterOrderItem = () => {
+    return (
+      <>
+        <p>Thank for order!!</p>
         <div className={classes.actions}>
-          {/* <button className={classes['button-alt']} onClick={onClose}>
-            Close
-          </button> */}
           <ButtonLoader
             type="button"
             className={classes['button-alt']}
@@ -104,22 +131,15 @@ const Cart = ({ onClose }: CartProps) => {
           >
             Close
           </ButtonLoader>
-          {/* {hasItems && (
-            <button className={classes.button} onClick={orderHandler}>
-              Order
-            </button>
-          )} */}
-          {hasItems && (
-            <ButtonLoader
-              type="button"
-              className={classes.button}
-              onClick={orderHandler}
-            >
-              Order
-            </ButtonLoader>
-          )}
         </div>
-      )}
+      </>
+    );
+  };
+
+  return (
+    <Modal onclose={onClose}>
+      {!isOrderSuccess && <BeforeOrderItem />}
+      {isOrderSuccess && <AfterOrderItem />}
     </Modal>
   );
 };

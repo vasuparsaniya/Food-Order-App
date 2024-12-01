@@ -9,7 +9,6 @@ const useHandleInsertFoodItem = () => {
     config,
   }: PostRequestFunctionParametersType) => {
     const foodItems = await postRequest(`/food-items`, data, config);
-    console.log('=======insert food items', foodItems);
     return foodItems;
   };
 

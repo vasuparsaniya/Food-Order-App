@@ -1,6 +1,7 @@
 import { FormEvent, useRef, useState } from 'react';
 import classes from '../../assets/css/Cart/Checkout.module.css';
 import {
+  checkFormValidation,
   isFiveChars,
   isNotEmpty,
 } from '../../helper/validation/inputValidation';
@@ -76,17 +77,22 @@ const Checkout = (props: CheckoutPropsType) => {
     const postalCode = postalCodeInputRef.current?.value;
     const city = cityInputRef.current?.value;
 
+    const formData: FormInputValidationType = {
+      name: isNotEmpty(name),
+      street: isNotEmpty(street),
+      city: isNotEmpty(city),
+      postalCode: isFiveChars(postalCode),
+    };
+    const isFormValidate: boolean = checkFormValidation(formData);
+
     setFormInputsValidation((prev) => {
       return {
         ...prev,
-        name: !!name && isNotEmpty(name),
-        street: !!street && isNotEmpty(street),
-        city: !!city && isNotEmpty(city),
-        postalCode: !!postalCode && isFiveChars(postalCode),
+        ...formData,
       };
     });
 
-    if (!formInputsValidation) {
+    if (!isFormValidate) {
       return;
     }
     onSubmit({
@@ -97,7 +103,6 @@ const Checkout = (props: CheckoutPropsType) => {
     });
   };
 
-  console.log('=====isLoading', isLoading);
   return (
     <form className={classes.form} onSubmit={confirmHandler}>
       <div className={classes.controlParent}>
@@ -159,21 +164,10 @@ const Checkout = (props: CheckoutPropsType) => {
         </div>
       </div>
       <div className={classes.actions}>
-        {/* <button type="button" onClick={onCancle}>
-          Cancle
-        </button> */}
         <ButtonLoader type="button" onClick={onCancle}>
           Cancle
         </ButtonLoader>
-        {/* <button
-          className={`flex items-center gap-1 ${classes.submit} opacity-60`}
-        >
-          <CircularProgress
-            sx={{ color: '#cf7e5f', maxWidth: '20px', maxHeight: '20px' }}
-          />
-          Confirm
-        </button> */}
-        <ButtonLoader type="submit" isLoading={false} isSubmitButton>
+        <ButtonLoader type="submit" isLoading={isLoading} isSubmitButton>
           Confirm
         </ButtonLoader>
       </div>
