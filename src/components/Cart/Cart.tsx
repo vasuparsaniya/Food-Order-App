@@ -7,6 +7,7 @@ import Checkout, { UserDataType } from './Checkout';
 import { useHandleOrderFoodItems } from '../../hook/orderFood/useHandleOrderFoodItems.service';
 import { auth, signInUser } from '../../helper/firebaseConfig/authentication';
 import { onAuthStateChanged } from 'firebase/auth';
+import ButtonLoader from '../../libs/components/Buttons/ButtonLoader';
 
 type CartProps = {
   onClose: () => void;
@@ -54,6 +55,9 @@ const Cart = ({ onClose }: CartProps) => {
             authToken: authToken,
           });
           console.log('=====orderFoodItems', orderFoodItems);
+          if (orderFoodItems) {
+            cartCtx.clearItem();
+          }
         }
       });
     } catch (error: any) {
@@ -82,17 +86,37 @@ const Cart = ({ onClose }: CartProps) => {
         <span>{totalAmount}</span>
       </div>
       {isCheckout && (
-        <Checkout onSubmit={submitOrderHandler} onCancle={onCancle} />
+        <Checkout
+          onSubmit={submitOrderHandler}
+          onCancle={onCancle}
+          isLoading={false}
+        />
       )}
       {!isCheckout && (
         <div className={classes.actions}>
-          <button className={classes['button-alt']} onClick={onClose}>
+          {/* <button className={classes['button-alt']} onClick={onClose}>
             Close
-          </button>
-          {hasItems && (
+          </button> */}
+          <ButtonLoader
+            type="button"
+            className={classes['button-alt']}
+            onClick={onClose}
+          >
+            Close
+          </ButtonLoader>
+          {/* {hasItems && (
             <button className={classes.button} onClick={orderHandler}>
               Order
             </button>
+          )} */}
+          {hasItems && (
+            <ButtonLoader
+              type="button"
+              className={classes.button}
+              onClick={orderHandler}
+            >
+              Order
+            </ButtonLoader>
           )}
         </div>
       )}

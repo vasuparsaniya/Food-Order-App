@@ -10,6 +10,7 @@ export type CartContextType = {
   addItem: (item: ItemInCartType) => void;
   // eslint-disable-next-line no-unused-vars
   removeItem: (id: string) => void;
+  clearItem: () => void;
 };
 
 const CartContext = createContext<CartContextType>({
@@ -17,6 +18,7 @@ const CartContext = createContext<CartContextType>({
   totalAmount: 0,
   addItem: () => {},
   removeItem: () => {},
+  clearItem: () => {},
 });
 
 export default CartContext;

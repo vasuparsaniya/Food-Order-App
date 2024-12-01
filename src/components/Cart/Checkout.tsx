@@ -4,6 +4,7 @@ import {
   isFiveChars,
   isNotEmpty,
 } from '../../helper/validation/inputValidation';
+import ButtonLoader from '../../libs/components/Buttons/ButtonLoader';
 
 // ** types **
 export type UserDataType = {
@@ -16,6 +17,7 @@ type CheckoutPropsType = {
   onCancle: () => void;
   // eslint-disable-next-line no-unused-vars
   onSubmit: (userData: UserDataType) => void;
+  isLoading: boolean;
 };
 type FormInputValidationType = {
   name: boolean;
@@ -56,7 +58,7 @@ const ValidationMessage = (props: ValidationMessagePropsType) => {
 };
 
 const Checkout = (props: CheckoutPropsType) => {
-  const { onSubmit, onCancle } = props;
+  const { onSubmit, onCancle, isLoading } = props;
   // ** Ref **
   const nameInputRef = useRef<HTMLInputElement>(null);
   const streetInputRef = useRef<HTMLInputElement>(null);
@@ -95,6 +97,7 @@ const Checkout = (props: CheckoutPropsType) => {
     });
   };
 
+  console.log('=====isLoading', isLoading);
   return (
     <form className={classes.form} onSubmit={confirmHandler}>
       <div className={classes.controlParent}>
@@ -156,10 +159,23 @@ const Checkout = (props: CheckoutPropsType) => {
         </div>
       </div>
       <div className={classes.actions}>
-        <button type="button" onClick={onCancle}>
+        {/* <button type="button" onClick={onCancle}>
           Cancle
-        </button>
-        <button className={classes.submit}>Confirm</button>
+        </button> */}
+        <ButtonLoader type="button" onClick={onCancle}>
+          Cancle
+        </ButtonLoader>
+        {/* <button
+          className={`flex items-center gap-1 ${classes.submit} opacity-60`}
+        >
+          <CircularProgress
+            sx={{ color: '#cf7e5f', maxWidth: '20px', maxHeight: '20px' }}
+          />
+          Confirm
+        </button> */}
+        <ButtonLoader type="submit" isLoading={false} isSubmitButton>
+          Confirm
+        </ButtonLoader>
       </div>
     </form>
   );

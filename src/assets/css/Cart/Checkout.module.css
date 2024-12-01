@@ -38,7 +38,7 @@
   gap: 1rem;
 }
 
-.actions button {
+/* .actions button {
   font: inherit;
   color: #5a1a01;
   cursor: pointer;
@@ -62,7 +62,7 @@
 .actions .submit:hover,
 .actions .submit:active {
   background-color: #7a2706;
-}
+} */
 
 .invalid label {
   color: #ca3e51;

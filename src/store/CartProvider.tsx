@@ -12,7 +12,8 @@ type DefaultCartStateType = {
 
 type ActionType =
   | { type: 'ADD'; item: ItemInCartType }
-  | { type: 'REMOVE'; id: string };
+  | { type: 'REMOVE'; id: string }
+  | { type: 'CLEAR' };
 
 const defaultCartState: DefaultCartStateType = {
   items: [],
@@ -71,6 +72,8 @@ const cartReducer = (state: DefaultCartStateType, action: ActionType) => {
         items: updatedItemsAfterRemove,
         totalAmount: updatedTotalAmountAfterRemove,
       };
+    case 'CLEAR':
+      return defaultCartState;
     default:
       console.error('---------Unknown cart action type----------');
       return state;
@@ -92,11 +95,15 @@ const CartProvider = ({ children }: CartProviderProps) => {
     disPatchCartAction({ type: 'REMOVE', id: id });
   };
 
+  const clearItemFromCartHandler = () => {
+    disPatchCartAction({ type: 'CLEAR' });
+  };
   const cartContext: CartContextType = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    clearItem: clearItemFromCartHandler,
   };
 
   return (
